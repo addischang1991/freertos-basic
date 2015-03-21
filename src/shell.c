@@ -15,6 +15,8 @@ typedef struct {
 	const char *desc;
 } cmdlist;
 
+int fibseries( int fibnum );
+
 void ls_command(int, char **);
 void man_command(int, char **);
 void cat_command(int, char **);
@@ -36,7 +38,7 @@ cmdlist cl[]={
 	MKCL(host, "Run command on host"),
 	MKCL(mmtest, "heap memory allocation test"),
 	MKCL(help, "help"),
-	MKCL(test, "test new function"),
+	MKCL(test, "test new function for embedded 2015"),
 	MKCL(, ""),
 };
 
@@ -160,12 +162,22 @@ void help_command(int n,char *argv[]){
 	}
 }
 
-void test_command(int n, char *argv[]) {
+void test_command( int n, char *argv[]) {
     int handle;
     int error;
+    int nn;
+    int yy;
+    int count;
+ 
+    nn = 10;
+   
+    fio_printf(1, "\r\n");   
 
-    fio_printf(1, "\r\n");
-    
+    for ( count=1; count<=nn; count++ ){
+       yy = fibseries( count );
+       fio_printf(1, "The Fibonacci Seriees at %d is %d \r\n", count, yy);
+    }
+
     handle = host_action(SYS_SYSTEM, "mkdir -p output");
     handle = host_action(SYS_SYSTEM, "touch output/syslog");
 
@@ -189,6 +201,26 @@ void test_command(int n, char *argv[]) {
 void _command(int n, char *argv[]){
     (void)n; (void)argv;
     fio_printf(1, "\r\n");
+}
+
+int fibseries( int fibnum ){
+   int i, a, b, c;
+   
+   a = 0;
+   b = 1;
+
+   // The statement 
+   if( fibnum == 1){
+      return b;
+   }
+   else{
+      for( i=2; i<=fibnum; i++ ){
+         c = a + b;
+         a = b;
+         b = c;
+      }
+   return b;
+   } 
 }
 
 cmdfunc *do_command(const char *cmd){
